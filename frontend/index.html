@@ -74,6 +74,7 @@
         async function sendMessage() {
             let inputField = document.getElementById("user-input");
             let message = inputField.value.trim();
+            const username = localStorage.getItem("username");  // Ensure username is retrieved from localStorage
             if (message === "") return;
 
             let chatDisplay = document.getElementById("chat-display");
@@ -88,7 +89,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ query: message }),
+                    body: JSON.stringify({ username: username, query: message }),
                 });
                 const data = await response.json();
 
