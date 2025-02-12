@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+<body>
+    <div class="ring">
+        <i style="--clr:#00ff0a;"></i>
+        <i style="--clr:#ff0057;"></i>
+        <i style="--clr:#fffd44;"></i>
+        <div class="login">
+            <!-- Form to submit signup details -->
+            <form action="/signup" method="post">
+                <h1 style="color: white;">Sign up</h1>
+                <div class="inputBx">
+                    <input type="text" name="username" id="username" placeholder="Username" required>
+                </div>
+                <div class="inputBx">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                </div>
+                <div class="inputBx">
+                   <input type="submit" value="Sign up">
+                </div>
+            </form>
+            
+            <div class="links">
+                <!-- Link to the login page -->
+                <a href="/login">Login</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
