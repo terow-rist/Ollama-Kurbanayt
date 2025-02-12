@@ -83,7 +83,7 @@
         </div>
     </div>
     <script>
-        function sendMessage() {
+        async function sendMessage() {
             let inputField = document.getElementById("user-input");
             let message = inputField.value.trim();
             if (message === "") return;
@@ -93,17 +93,28 @@
             userMessage.classList.add("message", "user-message");
             userMessage.textContent = message;
             chatDisplay.appendChild(userMessage);
+
+            try {
+                const response = await fetch('/ollama', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: message }),
+                });
+                const data = await response.json();
+                
+                let botMessage = document.createElement("div");
+                botMessage.classList.add("message", "bot-message");
+                botMessage.textContent = "Bot: " + data.response;
+                chatDisplay.appendChild(botMessage);
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
             
             inputField.value = "";
             chatDisplay.scrollTop = chatDisplay.scrollHeight;
-            
-            setTimeout(() => {
-                let botMessage = document.createElement("div");
-                botMessage.classList.add("message", "bot-message");
-                botMessage.textContent = "Bot: " + message.split('').reverse().join('');
-                chatDisplay.appendChild(botMessage);
-                chatDisplay.scrollTop = chatDisplay.scrollHeight;
-            }, 1000);
         }
     </script>
 </body>
