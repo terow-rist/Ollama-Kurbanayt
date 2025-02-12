@@ -49,7 +49,26 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">History</a>
+                      <button class="nav-link" id="historyLink">History</button>
+
+                      <script>
+                          document.addEventListener("DOMContentLoaded", function () {
+                              const username = localStorage.getItem("username");
+
+                              const historyButton = document.getElementById("historyLink");
+                              
+                              if (username) {
+                                  historyButton.addEventListener("click", function () {
+                                      window.location.href = `/history/${username}`;
+                                  });
+                              } else {
+                                  historyButton.addEventListener("click", function () {
+                                      alert("Username not found! Please log in.");
+                                  });
+                              }
+                          });
+                      </script>
+
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/show_data">Show Data</a>
