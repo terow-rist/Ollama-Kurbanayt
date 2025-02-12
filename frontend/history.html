@@ -1,0 +1,55 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Chat History</title>
+        <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+    </head>
+    <body>
+        <h1>Chat History for <span id="username">{{ username }}</span></h1>
+        <div id="content">
+            <p>Loading chat history...</p>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", async function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get("username"); // Get username from URL query params
+
+                if (!username) {
+                    document.getElementById("content").innerHTML = "<p>Error: No username provided.</p>";
+                    return;
+                }
+
+                document.getElementById("username").textContent = username; // Set the username
+
+                try {
+                    const response = await fetch(`/history?username=${username}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json(); // Expecting JSON response
+                    
+                    if (!data.history || data.history.length === 0) {
+                        document.getElementById("content").innerHTML = "<p>No chat history available.</p>";
+                        return;
+                    }
+
+                    let historyHTML = "<ul>";
+                    data.history.forEach(entry => {
+                        historyHTML += `<li><strong>User:</strong> ${entry.user} <br><strong>AI:</strong> ${entry.AI}</li>`;
+                    });
+                    historyHTML += "</ul>";
+
+                    document.getElementById("content").innerHTML = historyHTML;
+                } catch (error) {
+                    console.error("Error fetching chat history:", error);
+                    document.getElementById("content").innerHTML = `<p>Error loading chat history.</p>`;
+                }
+            });
+        </script>
+    </body>
+    </html>
