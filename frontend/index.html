@@ -12,9 +12,6 @@
     </head>
     
 </head>
-<style>
-
-</style>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
@@ -51,6 +48,12 @@
     </div>
 
     <div id="chat-container">
+        <!-- User info with logout button -->
+        <div id="user-info">
+            <span id="username-display">Username: </span>
+            <button id="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
         <div id="chat-display"></div>
         <div id="chat-input">
             <input type="text" id="user-input" placeholder="Type your message...">
@@ -59,11 +62,20 @@
     </div>
 
     <script>
+        window.onload = function() {
+            const username = localStorage.getItem("username");
+            if (username) {
+                document.getElementById("username-display").textContent = "Username: " + username;
+            } else {
+                window.location.href = '/login'; // Redirect to login page if no username found
+            }
+        }
+
         async function sendMessage() {
             let inputField = document.getElementById("user-input");
             let message = inputField.value.trim();
             if (message === "") return;
-            
+
             let chatDisplay = document.getElementById("chat-display");
             let userMessage = document.createElement("div");
             userMessage.classList.add("message", "user-message");
@@ -79,7 +91,7 @@
                     body: JSON.stringify({ query: message }),
                 });
                 const data = await response.json();
-                
+
                 let botMessage = document.createElement("div");
                 botMessage.classList.add("message", "bot-message");
                 botMessage.textContent = data.answer;
@@ -88,9 +100,14 @@
             } catch (error) {
                 console.error("An error occurred:", error);
             }
-            
+
             inputField.value = "";
             chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        }
+
+        function logout() {
+            localStorage.removeItem("username");  // Remove username from localStorage
+            window.location.href = '/login';  // Redirect to login page
         }
     </script>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

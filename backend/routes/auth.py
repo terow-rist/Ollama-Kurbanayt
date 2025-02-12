@@ -10,7 +10,6 @@ FRONTEND_DIR = "frontend"  # Directory where index.html is located
 SIGNUP_FILE = os.path.join(FRONTEND_DIR, "signup.html")
 LOGIN_FILE = os.path.join(FRONTEND_DIR, "login.html")
 # Dummy user storage for demonstration purposes
-users_db = {}
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page():
