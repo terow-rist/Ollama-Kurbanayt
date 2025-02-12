@@ -106,7 +106,7 @@
                 
                 let botMessage = document.createElement("div");
                 botMessage.classList.add("message", "bot-message");
-                botMessage.textContent = "Bot: " + data.response;
+                botMessage.textContent = data.answer;
                 chatDisplay.appendChild(botMessage);
                 chatDisplay.scrollTop = chatDisplay.scrollHeight;
             } catch (error) {
