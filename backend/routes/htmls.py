@@ -29,3 +29,11 @@ async def serve_index():
     if os.path.exists(INDEX_FILE):
         return FileResponse(INDEX_FILE)
     return {"error": "index.html not found"}
+
+SHOW_DATA_FILE = os.path.join(FRONTEND_DIR, "show_data.html")
+
+@router.get("/show_data", response_class=FileResponse)
+async def serve_show_data():
+    if os.path.exists(SHOW_DATA_FILE):
+        return FileResponse(SHOW_DATA_FILE)
+    return {"error": "SHOWDATA.html not found"}

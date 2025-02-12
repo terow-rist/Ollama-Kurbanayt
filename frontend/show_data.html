@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chroma Data</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    /* General Page Styling */
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f94e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        margin: 0;
+    }
+
+    /* Form Styling */
+    #data-form {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    #chroma-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+    }
+
+    button {
+        padding: 10px 15px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    /* Data Container */
+    #data-container {
+        width: 90%;
+        max-width: 500px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        max-height: 400px;
+    }
+
+    .data-item {
+        padding: 10px;
+        background: #eaf5ff;
+        border-left: 5px solid #007bff;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeIn 0.4s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+</style>
+<body>
+    <!-- Data Input Form -->
+    <div id="data-form">
+        <input type="text" id="chroma-input" placeholder="Enter data...">
+        <button onclick="addChromaData()">Add Data</button>
+    </div>
+
+    <!-- Display Data -->
+    <div id="data-container">
+        <h5>Stored Data</h5>
+        <div id="data-list"></div>
+    </div>
+
+    <script>
+        async function fetchChromaData() {
+            try {
+                const response = await fetch('/chromadata'); // Fetch from API
+                const data = await response.json(); // Parse JSON
+
+                const container = document.getElementById("data-list");
+                container.innerHTML = ""; // Clear previous data
+
+                data.documents.forEach(doc => {
+                    let div = document.createElement("div");
+                    div.classList.add("data-item"); 
+                    div.innerHTML = `<strong>Content:</strong> ${doc}`;
+                    container.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // Call fetch function when page loads
+        document.addEventListener("DOMContentLoaded", fetchChromaData);
+
+        async function addChromaData() {
+            let inputField = document.getElementById("chroma-input");
+            let content = inputField.value.trim();
+            if (content === "") return;
+
+            try {
+                const response = await fetch('/chromadata', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: content }),
+                });
+
+                const result = await response.json();
+                console.log("Response:", result);
+
+                if (result.status) {
+                    fetchChromaData(); // Refresh data after adding
+                    inputField.value = ""; // Clear input field
+                } else {
+                    alert("Failed to add data.");
+                }
+            } catch (error) {
+                console.error("Error adding data:", error);
+            }
+        }
+    </script>
+</body>
+</html>
