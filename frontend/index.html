@@ -93,6 +93,16 @@
                 });
                 const data = await response.json();
 
+                const newTab = window.open("", "_blank");
+
+                if (newTab) {
+                    newTab.document.write(data.answer);
+                    newTab.document.close();
+                } else {
+                    alert("Pop-up blocked! Allow pop-ups for this site.");
+                }
+
+
                 let botMessage = document.createElement("div");
                 botMessage.classList.add("message", "bot-message");
                 botMessage.textContent = data.answer;

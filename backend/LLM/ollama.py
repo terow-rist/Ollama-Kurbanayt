@@ -1,9 +1,25 @@
 from llama_index.llms.ollama import Ollama
 from llama_index.core.llms import ChatMessage
-
+from backend.database_chroma.chromaDAO import chroma_collection
+from sentence_transformers import SentenceTransformer
 
 llm = Ollama(model="llama3.2", request_timeout=120.0)
-
+model_name = "all-MiniLM-L6-v2"
+async def add_to_collection(document):
+    try:
+        embedding = SentenceTransformer(model_name).encode(document).tolist()
+        doc_id = f"doc_{len(chroma_collection.get()['ids']) + 1}"
+        chroma_collection.add(documents=[document], embeddings=embedding, ids = [doc_id])
+        return "added sucsefully"
+    except Exception as e:
+        return str(e) 
+    
+async def get_from_collection():
+    try:
+        documents = chroma_collection.get()["documents"]
+        return documents
+    except Exception as e:
+        return str(e)
 
 async def ollama_answer(user_query):
     system_instruction = (
@@ -12,9 +28,21 @@ async def ollama_answer(user_query):
         "If they ask for CSS, return only CSS. If they ask for JavaScript, return only JavaScript."
     )
 
+    query_vector = SentenceTransformer(model_name).encode(user_query).tolist()
+
+    results = chroma_collection.query(
+        query_embeddings=query_vector,
+        n_results=1,
+        include=["embeddings", "documents"]
+    )
+    docs = ""
+    for doc in results:
+        docs += doc
+
     messages = [
         ChatMessage(role="system", content=system_instruction),
         ChatMessage(role="user", content=user_query),
+        ChatMessage(role="assistant", content=docs),
     ]
 
     responce = ""
