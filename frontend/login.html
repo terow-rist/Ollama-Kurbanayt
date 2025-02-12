@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="ring">
+        <i style="--clr:#00ff0a;"></i>
+        <i style="--clr:#ff0057;"></i>
+        <i style="--clr:#fffd44;"></i>
+        <div class="login">
+            <form id="loginForm">
+                <div class="inputBx">
+                    <h1 style="color: white;">Login</h1>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                </div>
+                <div class="inputBx">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="inputBx">
+                    <input type="submit" value="Sign in">
+                </div>
+            </form>
+            <div class="links">
+                <a href="/signup">Signup</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({ username, password })
+            });
+
+            if (response.redirected) {
+                // Store in localStorage if login is successful
+                localStorage.setItem("username", username);
+                window.location.href = response.url;  // Redirect to home page
+            } else {
+                const data = await response.json();
+                alert(data.detail);  // Show error message
+            }
+        });
+    </script>
+</body>
+</html>
