@@ -10,7 +10,34 @@
         
         
     </head>
-    
+    <style>
+        #user-info {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adds spacing between elements */
+}
+
+#logout-btn {
+    background: #ff4444; /* Red button */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#logout-btn:hover {
+    background: #cc0000; /* Darker red on hover */
+}
+
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top">
