@@ -60,7 +60,6 @@ async def add_data(data: ChromaData):
 
 @router.post("/addfile")
 async def add_data(file: UploadFile = File(...)):
-    contents = await file.read()  
-    extracted_text = ollama.extract_documents_from_file(contents) 
-    ollama.add_to_collection(extracted_text)
-    return {"status": "File processed", "text": extracted_text}
+    extracted_text = await ollama.extract_documents_from_file(file) 
+    is_added = await ollama.add_to_collection(extracted_text)
+    return {"status": is_added}

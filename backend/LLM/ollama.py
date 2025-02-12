@@ -26,17 +26,22 @@ async def get_from_collection():
     except Exception as e:
         return str(e)
     
-def extract_documents_from_file(uploaded_file):
-    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-        temp_file.write(uploaded_file.read())
-    loader = PyPDFLoader(temp_file.name)
-    documents = loader.load()
-    os.unlink(temp_file.name)  # Clean up the temp file
-    text_list = ""
-    for doc in documents:
-        text_list += doc.page_content
-    return text_list 
+async def extract_documents_from_file(uploaded_file):
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_path = temp_file.name
+            temp_file.write(await uploaded_file.read())  # Await file read
+        
+        loader = PyPDFLoader(temp_path)
+        documents = loader.load()
+        
+        # Ensure cleanup
+        os.remove(temp_path)  
 
+        text_list = "\n".join([doc.page_content for doc in documents])
+        return text_list
+    except Exception as e:
+        return str(e)
 
 async def ollama_answer(user_query):
     system_instruction = (

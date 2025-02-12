@@ -84,9 +84,17 @@
 </style>
 <body>
     <!-- Data Input Form -->
+     
     <div id="data-form">
         <input type="text" id="chroma-input" placeholder="Enter data...">
         <button onclick="addChromaData()">Add Data</button>
+    </div>
+    <input type="file" id="file-input">
+    <button onclick="uploadFile()" style="margin-top: 10px; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer;">Upload</button>
+
+    <div id="result-container" style="display: none; margin-top: 20px; width: 80%; max-width: 600px; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; text-align: left; max-height: 300px; overflow-y: auto;">
+        <h4>Extracted Text:</h4>
+        <div id="result-text"></div>
     </div>
 
     <!-- Display Data -->
@@ -142,6 +150,36 @@
                 }
             } catch (error) {
                 console.error("Error adding data:", error);
+            }
+        }
+        async function uploadFile() {
+            let fileInput = document.getElementById("file-input");
+            if (fileInput.files.length === 0) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                let response = await fetch('/addfile', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                let result = await response.json();
+                console.log(result);
+
+                let resultContainer = document.getElementById("result-container");
+                let resultText = document.getElementById("result-text");
+
+                resultText.innerText = result.text || "No text extracted.";
+                resultContainer.style.display = "block";
+
+            } catch (error) {
+                console.error("Error uploading file:", error);
             }
         }
     </script>
