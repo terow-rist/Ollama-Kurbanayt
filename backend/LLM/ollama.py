@@ -2,6 +2,11 @@ from llama_index.llms.ollama import Ollama
 from llama_index.core.llms import ChatMessage
 from backend.database_chroma.chromaDAO import chroma_collection
 from sentence_transformers import SentenceTransformer
+from langchain_community.document_loaders import PyPDFLoader
+import os
+import tempfile
+
+
 
 llm = Ollama(model="llama3.2", request_timeout=120.0)
 model_name = "all-MiniLM-L6-v2"
@@ -20,6 +25,18 @@ async def get_from_collection():
         return documents
     except Exception as e:
         return str(e)
+    
+def extract_documents_from_file(uploaded_file):
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(uploaded_file.read())
+    loader = PyPDFLoader(temp_file.name)
+    documents = loader.load()
+    os.unlink(temp_file.name)  # Clean up the temp file
+    text_list = ""
+    for doc in documents:
+        text_list += doc.page_content
+    return text_list 
+
 
 async def ollama_answer(user_query):
     system_instruction = (
