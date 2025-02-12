@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
+from backend.database import db
 from starlette.status import HTTP_303_SEE_OTHER
 import os
 
@@ -18,7 +19,9 @@ async def login_page():
 
 @router.post("/login")
 async def login(username: str = Form(...), password: str = Form(...)):
-    if username in users_db and users_db[username] == password:
+    stored_user = await db.users.find_one({"username" : username})
+
+    if stored_user:
         return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
     raise HTTPException(status_code=400, detail="Invalid username or password")
 
@@ -29,7 +32,12 @@ async def signup_page():
 
 @router.post("/signup")
 async def signup(username: str = Form(...), password: str = Form(...)):
-    if username in users_db:
+    existing_user = await db.users.find_one({"username": username})
+
+    if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
-    users_db[username] = password
+
+    user_data = {"username": username, "password": password}
+    await db.users.insert_one(user_data)
+    
     return RedirectResponse(url="/login", status_code=HTTP_303_SEE_OTHER)
