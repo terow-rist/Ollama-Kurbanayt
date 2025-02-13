@@ -1,2 +1,5 @@
 .venv
 __pycache__/
+chroma_db
+.env
+/backend/database.py
