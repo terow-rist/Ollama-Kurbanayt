@@ -55,16 +55,18 @@ async def ollama_answer(user_query):
     results = chroma_collection.query(
         query_embeddings=query_vector,
         n_results=1,
-        include=["embeddings", "documents"]
+        include=["documents"]
     )
-    docs = ""
-    for doc in results:
-        docs += doc
+    print(f"result: {results['documents']}")
+    # docs = ""
+    # for doc in results["documents"]:
+    #     docs += doc
+    # print(docs)
 
     messages = [
         ChatMessage(role="system", content=system_instruction),
         ChatMessage(role="user", content=user_query),
-        ChatMessage(role="assistant", content=docs),
+        ChatMessage(role="assistant", content="\n".join(results["documents"][0])),
     ]
 
     responce = ""
