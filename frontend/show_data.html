@@ -11,12 +11,20 @@
     body {
         font-family: Arial, sans-serif;
         background: #f4f4f94e;
+        /* display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; 
+        flex-direction: column;
+        margin: 0; */
+    }
+    #content {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        height: 100vh; 
         flex-direction: column;
-        margin: 0;
+        margin: 0;        
     }
 
     /* Form Styling */
@@ -83,8 +91,11 @@
     }
 </style>
 <body>
+
+    <a href="/" ><button id = "backToIndex">Back</button></a><br>
+
     <!-- Data Input Form -->
-     
+     <div id = "content">
     <div id="data-form">
         <input type="text" id="chroma-input" placeholder="Enter data...">
         <button onclick="addChromaData()">Add Data</button>
@@ -101,6 +112,7 @@
     <div id="data-container">
         <h5>Stored Data</h5>
         <div id="data-list"></div>
+    </div>
     </div>
 
     <script>
