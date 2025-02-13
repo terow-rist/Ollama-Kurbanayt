@@ -20,7 +20,7 @@ async def login_page():
 async def login(username: str = Form(...), password: str = Form(...)):
     stored_user = await db.users.find_one({"username" : username})
 
-    if stored_user:
+    if stored_user and stored_user["password"] == password:
         return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
     raise HTTPException(status_code=400, detail="Invalid username or password")
 
